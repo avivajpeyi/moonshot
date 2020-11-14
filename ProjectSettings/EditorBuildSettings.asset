@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GravitationalBody/GravitationalBody(Bouncy).unity
     guid: ec5baab51699c4302ae7f507630c10c2
+  - enabled: 1
+    path: Assets/Rocket/Rocket.unity
+    guid: 773ea63d476e0420d88fb446d54e8794
   m_configObjects: {}
