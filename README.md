@@ -3,8 +3,8 @@
 # Moonshot
 A game where you have to get your rocket to another moon
 
-## [Gameplay Video]()
-![]()
+## [Gameplay Video](https://giphy.com/gifs/tsxAKRUT5S9fGMn1R4/html5)
+![](https://media.giphy.com/media/tsxAKRUT5S9fGMn1R4/giphy.gif)
 
 
 ## Release
