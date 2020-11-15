@@ -3,6 +3,15 @@
 # Moonshot
 A game where you have to get your rocket to another moon
 
+-  1 player mode, where you take a literal shot at a moon, from another moon
+-  2 player mode where you shoot at each other's moons
+
+Music Idea:
+Maybe sonify the orbits? Something like  this:
+https://www.youtube.com/watch?v=WS5UxLHbUKc&ab_channel=SYSTEMSounds
+
+
+
 ## [Gameplay Video](https://giphy.com/gifs/tsxAKRUT5S9fGMn1R4/html5)
 ![](https://media.giphy.com/media/tsxAKRUT5S9fGMn1R4/giphy.gif)
 
