@@ -1,7 +1,12 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Generates Planets with various positions and masses and keeps the planets
+/// in view of the camera 
+/// </summary>
 public class GravitationalBodyController : MonoBehaviour {
 
 	public GameObject planetPrefab;

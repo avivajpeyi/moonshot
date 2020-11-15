@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Collections;
 
+/// <summary>
+/// Sets up this game object as a "Newtonian Gravity" object 
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 public class GravitationalBody : MonoBehaviour {
 
@@ -9,7 +12,7 @@ public class GravitationalBody : MonoBehaviour {
 	public float startingMass = 100;
 	public Vector2 initialVelocity;
 
-	//I use a static list of bodies so that we don't need to Find them every frame
+	//muse a static list of bodies so that we don't need to Find them every frame
 	static List<Rigidbody2D> attractableBodies = new List<Rigidbody2D>();
 
 	void Start() {
