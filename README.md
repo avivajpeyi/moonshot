@@ -1,4 +1,4 @@
-![Build 🧱](https://github.com/avivajpeyi/Moonshot/workflows/Build%20%F0%9F%A7%B1/badge.svg?branch=master)
+![Build 🧱](https://github.com/avivajpeyi/moonshot/workflows/Build%20%F0%9F%A7%B1/badge.svg?branch=main)
 
 # Moonshot
 A game where you have to get your rocket to another moon
