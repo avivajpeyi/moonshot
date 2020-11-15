@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Game Object that can be shot
+/// </summary>
 public class Rocket : MonoBehaviour
 {
     private float force;
@@ -19,7 +22,6 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         arrow.transform.localScale = new Vector3(force, force, 1);
         if (Input.GetMouseButton (0)) {
             force += increase*Time.deltaTime;
@@ -37,9 +39,9 @@ public class Rocket : MonoBehaviour
     void Shoot()
     {
         Debug.Log("Shoot");
-        GetComponent<GravitationalBody>().enabled = true;
-        GetComponent<Rigidbody2D>()
-            .AddForce(transform.up * force , ForceMode2D.Impulse);
+//        GetComponent<GravitationalBody>().enabled = true;
+//        GetComponent<Rigidbody2D>()
+//            .AddForce(transform.up * force , ForceMode2D.Impulse);
 
     }
 }
