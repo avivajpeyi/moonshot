@@ -10,8 +10,12 @@ Maybe something like [SYSTEMSound's sonification of orbits](https://www.youtube.
 
 
 ## [Gameplay Video](https://giphy.com/gifs/tsxAKRUT5S9fGMn1R4/html5)
-![](https://media.giphy.com/media/tsxAKRUT5S9fGMn1R4/giphy.gif)
 
+
+
+| Newtonian Gravity | Orbits  |
+|---|---|
+| ![](https://media.giphy.com/media/tsxAKRUT5S9fGMn1R4/giphy.gif)  | ![](https://media.giphy.com/media/G4fchPxQsw1YQBBUnX/giphy.gif)  |
 
 ## Release
 * You can download the game for your PC/Mac device from [here](https://avivajpeyi.itch.io/moonshot).
