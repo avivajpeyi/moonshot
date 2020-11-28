@@ -212,14 +212,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 304646415}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ec0675ef39264f29976acfb122cc6d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allBodies:
-  - {fileID: 1943404357}
---- !u!1001 &504456324
+  allBodies: []
+--- !u!1001 &849819981
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -357,7 +356,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Rocket
+  m_Text: Rocket + Planets
 --- !u!222 &866215797
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -522,14 +521,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetPrefab: {fileID: 110180, guid: fd7c1926e0f8442c5996b264b887dcc9, type: 3}
-  numStar: 1
+  numStar: 10
   depth: 2
   start: {fileID: 0}
   end: {fileID: 0}
   allBodies: []
---- !u!1 &1943404357 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7818930465140009532, guid: 0853507d7bfb8423cb17cfe1a4b433e9,
-    type: 3}
-  m_PrefabInstance: {fileID: 504456324}
-  m_PrefabAsset: {fileID: 0}

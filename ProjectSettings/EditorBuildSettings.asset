@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Rocket.unity
     guid: 773ea63d476e0420d88fb446d54e8794
+  - enabled: 1
+    path: Assets/Scenes/RocketToPlanet.unity
+    guid: 365c1d34b4f574dce910ac0976c0bf37
   m_configObjects: {}

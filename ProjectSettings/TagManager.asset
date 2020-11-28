@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - planet
+  - star
   layers:
   - Default
   - TransparentFX
@@ -43,4 +45,10 @@ TagManager:
     locked: 0
   - name: Behind
     uniqueID: 4026608507
+    locked: 0
+  - name: Front
+    uniqueID: 951037301
+    locked: 0
+  - name: New Layer
+    uniqueID: 2147996877
     locked: 0
