@@ -247,7 +247,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 13.660004, y: -16.08}
+  m_AnchoredPosition: {x: 13.660034, y: -16.080017}
   m_SizeDelta: {x: 250, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1679889162
@@ -402,8 +402,8 @@ GameObject:
   - component: {fileID: 2122402626}
   - component: {fileID: 2122402624}
   - component: {fileID: 2122402623}
-  - component: {fileID: 2122402628}
   - component: {fileID: 2122402625}
+  - component: {fileID: 2122402628}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera

@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Collections;
 
+/// <summary>
+/// Sets up this game object as a "Newtonian Gravity" object 
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
-public class GravitationalBody : MonoBehaviour {
-
+public class GravitationalBody : MonoBehaviour
+{
 	public float maxDistance = 1000;
 	public float startingMass = 100;
 	public Vector2 initialVelocity;
 
-	//I use a static list of bodies so that we don't need to Find them every frame
+	//muse a static list of bodies so that we don't need to Find them every frame
 	static List<Rigidbody2D> attractableBodies = new List<Rigidbody2D>();
 
 	void Start() {
@@ -17,7 +20,6 @@ public class GravitationalBody : MonoBehaviour {
 		SetupRigidbody2D();
 		//Add this gravitational body to the list, so that all other gravitational bodies can be effected by it
 		attractableBodies.Add (GetComponent<Rigidbody2D>());
-
 	}
 
 	void SetupRigidbody2D() {
@@ -40,7 +42,8 @@ public class GravitationalBody : MonoBehaviour {
 			//We arn't going to add a gravitational pull to our own body
 			if (otherBody == GetComponent<Rigidbody2D>())
 				continue;
-
+				
+			// gravitationally pull the other body 
 			otherBody.AddForce(DetermineGravitationalForce(otherBody));
 
 		}
@@ -50,18 +53,16 @@ public class GravitationalBody : MonoBehaviour {
 	Vector2 DetermineGravitationalForce(Rigidbody2D otherBody) {
 
 		Vector2 relativePosition = GetComponent<Rigidbody2D>().position - otherBody.position;
-	
 		float distance = Mathf.Clamp (relativePosition.magnitude, 0, maxDistance);
 
 		//the force of gravity will reduce by the distance squared
 		float gravityFactor = 1f - (Mathf.Sqrt(distance) / Mathf.Sqrt(maxDistance));
 
-		//creates a vector that will force the otherbody toward this body, using the gravity factor times the mass of this body as the magnitude
+		//creates a vector that will force the otherbody toward this body,
+		//using the gravity factor times the mass of this body as the magnitude
 		Vector2 gravitationalForce = relativePosition.normalized * (gravityFactor * GetComponent<Rigidbody2D>().mass);
-
 		return gravitationalForce;
 		
 	}
 	
 }
-

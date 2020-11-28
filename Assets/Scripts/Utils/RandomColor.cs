@@ -36,10 +36,5 @@ public class RandomColor : MonoBehaviour
         );
         tr.colorGradient = gradient;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

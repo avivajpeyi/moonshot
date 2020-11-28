@@ -13,7 +13,9 @@ public class OrbitManager : MonoBehaviour
     [SerializeField] private int maxOrbitals = 8;
     
     [SerializeField]
-    private OrbitalRandomRanges[] parameters = new OrbitalRandomRanges[3];
+    private List<OrbitalRandomRanges> parameters = new List<OrbitalRandomRanges>();
+
+    [SerializeField] private int numPlanets = 3;
     
     [SerializeField]
     private List<Color> orbitColors = new List<Color>();
@@ -39,8 +41,7 @@ public class OrbitManager : MonoBehaviour
     private void InitOrbitals()
     {
         totalOrbitsGenerated = 0;
-        //Depth 3
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < numPlanets; i++)
         {
             GenerateOrbitalLayer(i);
         }
@@ -48,7 +49,7 @@ public class OrbitManager : MonoBehaviour
 
     private void GenerateOrbitalLayer(int depth)
     {
-        List<Orbital> orbits = new List<Orbital>();
+        List<Orbital> orbits = new List<Orbital>(); 
         orbitLayers[depth] = orbits;
         OrbitalRandomRanges param = parameters[depth];
 
