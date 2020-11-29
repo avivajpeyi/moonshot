@@ -21,6 +21,9 @@ public class Planetoid : MonoBehaviour
     public SpriteRenderer myOutline;
     public ParticleSystem myPluseRings;
     public ParticleSystem mySparks;
+    public AudioSource sound;
+    public float tol;
+    public float dispmag;
     Color startColor ;
     Color endColor ;
     
@@ -32,8 +35,8 @@ public class Planetoid : MonoBehaviour
     [Tooltip("Distance from Center of Gravity")]
     [SerializeField] protected float orbitRadius;
     [SerializeField] private bool isRotatingClockwise = true;
-    protected float currentAngle = 0 ;
-
+    [SerializeField]protected float currentAngle = 0 ;
+    [SerializeField]float startAngle;
     protected bool isMoving = false;
 
 
@@ -168,6 +171,7 @@ public class Planetoid : MonoBehaviour
     void SetupOrbit()
     {
         currentAngle = Random.Range(0f, 360f);
+        startAngle = currentAngle;
         if (!isStar)
         {
             transform.position = GetPositionOnCircle(currentAngle);
@@ -202,6 +206,8 @@ public class Planetoid : MonoBehaviour
             MoveAlongOrbit();
         if (isStar)
             PulseColor();
+        if (SoundCheck(tol))
+            PlaySound();
     }
 
     protected Vector2 GetPositionOnCircle(float angle)
@@ -224,4 +230,23 @@ public class Planetoid : MonoBehaviour
         }
         transform.position = GetPositionOnCircle(currentAngle);
     }
+    bool SoundCheck(float tol)
+    {
+        Vector2 startPosition = GetPositionOnCircle(startAngle);
+        Vector2 pos = transform.position;
+        Vector2 disp = startPosition - pos;
+        dispmag = disp.magnitude;
+        if (dispmag<= tol){
+            return true;
+        }
+        else {
+            return false;
+        }
+        
+    }
+    void PlaySound(){
+        //sound.Play();
+        Debug.Log("Beep");
+    }
+
 }
