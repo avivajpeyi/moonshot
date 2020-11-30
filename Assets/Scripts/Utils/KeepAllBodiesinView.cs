@@ -5,10 +5,15 @@ using UnityEngine;
 public class KeepAllBodiesinView : MonoBehaviour
 {
     public List<GameObject> allBodies = new List<GameObject>();
-
+    public bool keepUpdating = true;
+    
+    
     void Update()
     {
-        KeepAllBodiesInView();
+        if (keepUpdating)
+        {
+            KeepAllBodiesInView();            
+        }
     }
 
     void KeepAllBodiesInView()

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - planet
   - star
+  - dont_destroy
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - PostProcessing
   - 
   - 
   - 
@@ -40,15 +41,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 951037301
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Behind
+  - name: FX
     uniqueID: 4026608507
     locked: 0
-  - name: Front
-    uniqueID: 951037301
-    locked: 0
-  - name: New Layer
+  - name: Planets
     uniqueID: 2147996877
+    locked: 0
+  - name: Foreground
+    uniqueID: 397793409
     locked: 0

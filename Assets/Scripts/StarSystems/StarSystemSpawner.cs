@@ -9,14 +9,18 @@ using Random = UnityEngine.Random;
 public class StarSystemSpawner : MonoBehaviour
 {
     public GameObject planetPrefab;
-    public int numStar;
-    public int depth = 5;
-
+    public int numStar = 3;
+    public int depth = 2;
+    public int numPlanetsPerDepth = 1;
+    
     public Planetoid start;
     public Planetoid end;
     private float dist = 0;
     public List<Planetoid> allBodies = new List<Planetoid>();
 
+    private KeepAllBodiesinView cameraTracker;
+
+    
 
     List<List<Planetoid>> PlanetoidLayerList = new List<List<Planetoid>>();
 
@@ -63,7 +67,6 @@ public class StarSystemSpawner : MonoBehaviour
         Collider2D overlapcol = Physics2D.OverlapCircle(newPos, starSize);
         while (overlapcol != null)
         {
-            Debug.Log("Star present! looking for new point");
             newPos = new Vector3(
                 Random.Range(-dist, dist),
                 Random.Range(-dist, dist),
@@ -75,16 +78,29 @@ public class StarSystemSpawner : MonoBehaviour
         return newPos;
     }
 
+    IEnumerator SetCamera()
+    {
+        cameraTracker = FindObjectOfType<KeepAllBodiesinView>();
+        List<GameObject> planetGOs = new List<GameObject>();
+        foreach (var p in allBodies)
+        {
+            planetGOs.Add(p.gameObject);
+        }
+        cameraTracker.allBodies = planetGOs;
+        yield return new WaitForSeconds(1.0f);
+        cameraTracker.keepUpdating = false;
+    }
+
 
     void Start()
     {
         dist = Camera.main.orthographicSize;
         InitaliseOrbits();
-        Debug.Log("Num Layers: " + PlanetoidLayerList.Count);
         if (PlanetoidLayerList.Count > 1)
         {
             SetStartAndEnd();
         }
+        StartCoroutine(SetCamera());
     }
 
     void SetStartAndEnd()
@@ -140,16 +156,12 @@ public class StarSystemSpawner : MonoBehaviour
             {
                 foreach (var parent in PlanetoidLayerList[l - 1])
                 {
-                    List<Planetoid> parentsMoons = AddPlanets(parent, 1, l);
+                    List<Planetoid> parentsMoons = AddPlanets(parent, numPlanetsPerDepth, l);
 
                     PlanetoidLayerList[l] =
                         PlanetoidLayerList[l].Concat(parentsMoons).ToList();
                 }
             }
-
-            Debug.Log("Num planets in " + l + " layer " + PlanetoidLayerList[l].Count);
-
-
             allBodies = allBodies.Concat(PlanetoidLayerList[l]).ToList();
         }
     }
