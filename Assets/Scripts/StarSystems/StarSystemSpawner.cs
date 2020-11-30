@@ -9,9 +9,10 @@ using Random = UnityEngine.Random;
 public class StarSystemSpawner : MonoBehaviour
 {
     public GameObject planetPrefab;
-    public int numStar;
-    public int depth = 5;
-
+    public int numStar = 3;
+    public int depth = 2;
+    public int numPlanetsPerDepth = 1;
+    
     public Planetoid start;
     public Planetoid end;
     private float dist = 0;
@@ -155,7 +156,7 @@ public class StarSystemSpawner : MonoBehaviour
             {
                 foreach (var parent in PlanetoidLayerList[l - 1])
                 {
-                    List<Planetoid> parentsMoons = AddPlanets(parent, 1, l);
+                    List<Planetoid> parentsMoons = AddPlanets(parent, numPlanetsPerDepth, l);
 
                     PlanetoidLayerList[l] =
                         PlanetoidLayerList[l].Concat(parentsMoons).ToList();

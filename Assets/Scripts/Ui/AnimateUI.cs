@@ -21,6 +21,8 @@ public class AnimateUI : MonoBehaviour
 
     public GameObject LevelCompleteUI;
     public TextMeshProUGUI levelCompleteText;
+
+    public GameObject InGameUi;
     
     [SerializeField] Vector2 startPos = new Vector2();
     [SerializeField] Vector2 endPos = new Vector2();
@@ -44,6 +46,10 @@ public class AnimateUI : MonoBehaviour
         ShotText.text = "";
         StartCoroutine(AnimateTitle());
         rocket = FindObjectOfType<Rocket>();
+        
+        InGameUi.SetActive(false);
+        LevelCompleteUI.SetActive(false);
+        TitlePanel.SetActive(true);
 
     }
 
@@ -58,6 +64,7 @@ public class AnimateUI : MonoBehaviour
         MoonText.text = "";
         ShotText.text = "";
         TitlePanel.SetActive(false);
+        InGameUi.SetActive(true);
         
         
         // init controls
@@ -109,13 +116,16 @@ public class AnimateUI : MonoBehaviour
 
     public void EnableLevelCompleteUI()
     {
+        Debug.Log("Enable LevelcompleteUi, disable IngameUi");
         LevelCompleteUI.SetActive(true);
+        InGameUi.SetActive(false);
     }
 
     public void ResetScene()
     {
         Debug.Log("Reset rocket");
         LevelCompleteUI.SetActive(false);
+        InGameUi.SetActive(true);
         rocket.ResetRocket();
     }
     

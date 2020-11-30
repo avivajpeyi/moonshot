@@ -6,6 +6,7 @@ TagManager:
   tags:
   - planet
   - star
+  - dont_destroy
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - PostProcessing
   - 
   - 
   - 

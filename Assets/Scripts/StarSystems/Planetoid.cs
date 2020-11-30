@@ -162,7 +162,7 @@ public class Planetoid : MonoBehaviour
                     GradientColorKey(color, 1.0f)
             },
             new GradientAlphaKey[]
-                {new GradientAlphaKey(0.8f, 0.0f), new GradientAlphaKey(0, 1.0f)}
+                {new GradientAlphaKey(0.5f, 0.0f), new GradientAlphaKey(0, 1.0f)}
         );
         myTrailRenderer.colorGradient = gradient;
     }

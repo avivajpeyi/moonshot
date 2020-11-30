@@ -22,8 +22,13 @@ public class Rocket : MonoBehaviour
     public float mass = 20;
     public Vector2 initialVelocity;
 
+    private bool debuggingMode = false;
+    
     private MouseDragRelease mouseController;
 
+    LineRenderer DebugLine;
+    
+    
     [SerializeField] private Vector2 NetForce;
 
     [SerializeField] private bool gravitationOn = false;
@@ -46,6 +51,26 @@ public class Rocket : MonoBehaviour
 
     private AnimateUI animateUi;
 
+    private void Awake()
+    {
+        OptionsContainer op = FindObjectOfType<OptionsContainer>();
+        if (op != null)
+        {
+            debuggingMode = op.DebuggingMode;
+            if (debuggingMode)
+            {
+                DebugLine = gameObject.AddComponent<LineRenderer>();
+                DebugLine.material = new Material(Shader.Find("Sprites/Default"));
+                DebugLine.startColor = Color.white;
+                DebugLine.endColor = Color.white;
+                DebugLine.startWidth = 0.1f;
+                DebugLine.endWidth = 0.1f;
+            }
+        }
+    }
+
+    
+    
     void Start()
     {
         mouseController = gameObject.AddComponent<MouseDragRelease>();
@@ -106,12 +131,24 @@ public class Rocket : MonoBehaviour
     {
         if (grounded && controlEnabled)
         {
+            mouseController.start = new Vector3(
+                x:transform.position.x, 
+                y: transform.position.y, 
+                z:0);
             CalculateShot(mouseController.dragVector);
         }
         else
         {
             GravitationalMovement();
         }
+
+        if (debuggingMode)
+        {
+            Vector2 pos = transform.position;
+            DebugLine.SetPosition(0, pos);
+            DebugLine.SetPosition(1, pos + NetForce);
+        }
+
     }
 
 
@@ -150,7 +187,6 @@ public class Rocket : MonoBehaviour
             shotVector = mouseController.GetMousePoint() - transform.position;
             shotVector.Normalize();
         }
-
         shotForce = Mathf.Clamp(
             value: shotVector.magnitude,
             min: 1.0f,
@@ -213,6 +249,7 @@ public class Rocket : MonoBehaviour
             myCollider2D.enabled = true;
             myBody.velocity = initialVelocity;
             transform.parent = null;
+            Debug.Log("remove parent");
             myTrailRender.time = trailTime;
             mySpriteRenderer.enabled = true;
         }
@@ -230,23 +267,21 @@ public class Rocket : MonoBehaviour
     }
 
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.white;
-        Gizmos.DrawRay(transform.position, NetForce * 100);
+        Gizmos.DrawRay(transform.position, NetForce);
         Gizmos.color = Color.blue;
         if (gravitationOn)
         {
             Gizmos.DrawRay(transform.position, myBody.velocity.normalized * 5);
         }
-
-        Gizmos.DrawSphere(transform.position, radius: mySpriteRenderer.size.magnitude);
     }
 
 
     void LandOnPlanet(Transform planet)
     {
-        Debug.Log("Rocket placed on " + planet.name);
+        Debug.Log("Rocket landed on " + planet.name);
         transform.SetParent(planet, worldPositionStays: true);
         transform.SetPositionAndRotation(planet.position,
             Quaternion.identity);
@@ -262,7 +297,6 @@ public class Rocket : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("Crashed");
         if (col.CompareTag("planet"))
         {
             LandOnPlanet(planet: col.transform);
@@ -318,10 +352,11 @@ public class Rocket : MonoBehaviour
 
     public void ResetRocket()
     {
-        StartCoroutine(WaitBeforeEnablingParentGravity(0));
+        Debug.Log("reset");
+        controlEnabled = false;
+        myTrailRender.time = 0;
         if (parentPlanet != null)
             parentPlanet.myOutline.enabled = false;
-        TogglePhysics(false);
         LandOnPlanet(starSystemSpawner.start.transform);
         StartCoroutine(TurnControlsOn());
     }
