@@ -17,6 +17,9 @@ public class StarSystemSpawner : MonoBehaviour
     private float dist = 0;
     public List<Planetoid> allBodies = new List<Planetoid>();
 
+    private KeepAllBodiesinView cameraTracker;
+
+    
 
     List<List<Planetoid>> PlanetoidLayerList = new List<List<Planetoid>>();
 
@@ -63,7 +66,6 @@ public class StarSystemSpawner : MonoBehaviour
         Collider2D overlapcol = Physics2D.OverlapCircle(newPos, starSize);
         while (overlapcol != null)
         {
-            Debug.Log("Star present! looking for new point");
             newPos = new Vector3(
                 Random.Range(-dist, dist),
                 Random.Range(-dist, dist),
@@ -75,16 +77,29 @@ public class StarSystemSpawner : MonoBehaviour
         return newPos;
     }
 
+    IEnumerator SetCamera()
+    {
+        cameraTracker = FindObjectOfType<KeepAllBodiesinView>();
+        List<GameObject> planetGOs = new List<GameObject>();
+        foreach (var p in allBodies)
+        {
+            planetGOs.Add(p.gameObject);
+        }
+        cameraTracker.allBodies = planetGOs;
+        yield return new WaitForSeconds(1.0f);
+        cameraTracker.keepUpdating = false;
+    }
+
 
     void Start()
     {
         dist = Camera.main.orthographicSize;
         InitaliseOrbits();
-        Debug.Log("Num Layers: " + PlanetoidLayerList.Count);
         if (PlanetoidLayerList.Count > 1)
         {
             SetStartAndEnd();
         }
+        StartCoroutine(SetCamera());
     }
 
     void SetStartAndEnd()
@@ -146,10 +161,6 @@ public class StarSystemSpawner : MonoBehaviour
                         PlanetoidLayerList[l].Concat(parentsMoons).ToList();
                 }
             }
-
-            Debug.Log("Num planets in " + l + " layer " + PlanetoidLayerList[l].Count);
-
-
             allBodies = allBodies.Concat(PlanetoidLayerList[l]).ToList();
         }
     }

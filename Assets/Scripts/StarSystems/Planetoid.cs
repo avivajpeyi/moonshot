@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,6 +9,7 @@ public class Planetoid : MonoBehaviour
 {
     [Header("Planetoid settings")] [SerializeField]
     public float mass;
+
     [SerializeField] public float size;
     [SerializeField] private Color color;
     private float sizeToMassFactor = 20.0f;
@@ -21,27 +19,30 @@ public class Planetoid : MonoBehaviour
     public SpriteRenderer myOutline;
     public ParticleSystem myPluseRings;
     public ParticleSystem mySparks;
-    Color startColor ;
-    Color endColor ;
-    
+    Color startColor;
+    Color endColor;
+
 
     [Header("Orbit settings")] [SerializeField]
     protected Transform centerOfGravity;
-    [Tooltip("Speed of orbit")]
-    [SerializeField] protected float orbitSpeed;
-    [Tooltip("Distance from Center of Gravity")]
-    [SerializeField] protected float orbitRadius;
+
+    [Tooltip("Speed of orbit")] [SerializeField]
+    protected float orbitSpeed;
+
+    [Tooltip("Distance from Center of Gravity")] [SerializeField]
+    protected float orbitRadius;
+
     [SerializeField] private bool isRotatingClockwise = true;
-    protected float currentAngle = 0 ;
+    protected float currentAngle = 0;
+
 
     protected bool isMoving = false;
 
 
     public bool isStar = false;
-    
+
     private float lastColorChangeTime;
 
-    
 
     public void InitializePlanetoid(
         Transform centerOfGravity,
@@ -52,7 +53,7 @@ public class Planetoid : MonoBehaviour
     {
         myBody = GetComponent<Rigidbody2D>();
         myRenderer = GetComponent<SpriteRenderer>();
-        myTrailRenderer = gameObject.AddComponent<TrailRenderer>();
+        myTrailRenderer = GetComponent<TrailRenderer>();
         color = new Color(Random.Range(0F, 1F), Random.Range(0, 1F), Random.Range(0, 1F));
         this.centerOfGravity = centerOfGravity;
         this.orbitSpeed = orbitSpeed;
@@ -68,12 +69,13 @@ public class Planetoid : MonoBehaviour
         {
             isStar = true;
         }
+
         SetupMass();
         SetupRigidbody();
         SetupRenderer();
         SetupOrbit();
     }
-    
+
 
     void SetupRigidbody()
     {
@@ -92,9 +94,11 @@ public class Planetoid : MonoBehaviour
 
     public void UpdateColors(Color newColor)
     {
-        color = newColor;
-        Debug.Log("Setting color "+ newColor);
-        SetupRenderer();
+        if (this.CompareTag("planet"))
+        {
+            color = newColor;
+            SetupRenderer();
+        }
     }
 
     void SetupRenderer()
@@ -103,7 +107,7 @@ public class Planetoid : MonoBehaviour
         startColor = color;
         endColor = color;
         endColor.a = 0.7f;
-        
+
         if (!isStar)
         {
             SetupTrail();
@@ -123,7 +127,6 @@ public class Planetoid : MonoBehaviour
                     new GradientAlphaKey(0, 1.0f)
                 });
             mySparks.Pause();
-            
         }
         else
         {
@@ -144,9 +147,8 @@ public class Planetoid : MonoBehaviour
                 });
             myPluseRings.Play();
         }
-
     }
-    
+
 
     void SetupTrail()
     {
@@ -190,8 +192,8 @@ public class Planetoid : MonoBehaviour
             startColor = endColor;
             endColor = temp;
         }
-        myRenderer.color = Color.Lerp(startColor, endColor, ratio);
 
+        myRenderer.color = Color.Lerp(startColor, endColor, ratio);
     }
 
 
@@ -212,7 +214,6 @@ public class Planetoid : MonoBehaviour
         return new Vector2(x, y);
     }
 
-    
 
     void MoveAlongOrbit()
     {
@@ -222,6 +223,7 @@ public class Planetoid : MonoBehaviour
         {
             currentAngle = currentAngle - 360f * clockwiseMultiplier;
         }
+
         transform.position = GetPositionOnCircle(currentAngle);
     }
 }

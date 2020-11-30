@@ -38,4 +38,15 @@ public class SceneController : MonoBehaviour
             nextScene = SceneManager.sceneCountInBuildSettings - 1 ;
         return nextScene;
     }
+
+    public void NextLevel()
+    {
+        SceneManager.LoadScene(sceneIdx); // currently just reloading scene
+    }
+    
+    public void ReplayLevel()
+    {
+        Debug.Log("REPLAY NOT IMPLEMENTED YET");
+        SceneManager.LoadScene(sceneIdx); 
+    }
 }

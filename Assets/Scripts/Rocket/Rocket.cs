@@ -11,6 +11,10 @@ public class Rocket : MonoBehaviour
     private float shotForce;
     public float maxForce = 20;
 
+    public int numDeath = 0;
+
+    public bool controlEnabled = false;
+
     [Tooltip("Max distance rocket will gravitationally be affected by planets")]
     public float maxDistance = 1000;
 
@@ -40,6 +44,7 @@ public class Rocket : MonoBehaviour
     private StarSystemSpawner starSystemSpawner;
     private Collider2D myCollider2D;
 
+    private AnimateUI animateUi;
 
     void Start()
     {
@@ -50,7 +55,7 @@ public class Rocket : MonoBehaviour
         myBody = GetComponent<Rigidbody2D>();
         myCollider2D = GetComponent<Collider2D>();
         myTrailRender = GetComponent<TrailRenderer>();
-        
+        animateUi = FindObjectOfType<AnimateUI>();
         myTrailRender.autodestruct = false;
         trailTime = myTrailRender.time;
         myTrailRender.time = 0;
@@ -58,31 +63,34 @@ public class Rocket : MonoBehaviour
     }
 
 
-    IEnumerator WaitBeforeEnablingParentGravity()
+    IEnumerator WaitBeforeEnablingParentGravity(float waitTime)
     {
-        if (parentPlanet != null)
-            parentPlanet.GetComponent<Collider2D>().enabled = true;
-
-
         Collider2D[] allOverlappingColliders = Physics2D.OverlapCircleAll(
-            point:transform.position,
-            radius:mySpriteRenderer.size.magnitude
-            );
+            point: transform.position,
+            radius: mySpriteRenderer.size.magnitude
+        );
 
         foreach (var col in allOverlappingColliders)
         {
             col.enabled = false;
         }
-
-        float waitTime = 1.0f;
-        yield return new WaitForSeconds(1.0f);
-        Debug.Log("Adding parent --> curr len " + attractableBodies.Count);
+        
+        yield return new WaitForSeconds(0.5f);
         foreach (var col in allOverlappingColliders)
         {
             col.enabled = true;
         }
-        Debug.Log("new len " + attractableBodies.Count);
-        gravitationOn = true;
+
+        if (!grounded)
+        {
+            gravitationOn = true;
+            attractableBodies = starSystemSpawner.allBodies;
+            foreach (var bod in attractableBodies)
+            {
+                bod.GetComponent<Collider2D>().enabled = true;
+            }
+        }
+            
     }
 
 
@@ -96,7 +104,7 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (grounded)
+        if (grounded && controlEnabled)
         {
             CalculateShot(mouseController.dragVector);
         }
@@ -165,7 +173,7 @@ public class Rocket : MonoBehaviour
         initialVelocity = shotVector.normalized * shotForce;
         shotForce = 0;
         parentPlanet.myOutline.enabled = false;
-        StartCoroutine(WaitBeforeEnablingParentGravity());
+        StartCoroutine(WaitBeforeEnablingParentGravity(waitTime:1.0f));
         TogglePhysics(true);
     }
 
@@ -206,6 +214,7 @@ public class Rocket : MonoBehaviour
             myBody.velocity = initialVelocity;
             transform.parent = null;
             myTrailRender.time = trailTime;
+            mySpriteRenderer.enabled = true;
         }
         else
         {
@@ -215,6 +224,7 @@ public class Rocket : MonoBehaviour
             myCollider2D.enabled = false;
             myBody.velocity = Vector2.zero;
             NetForce = Vector2.zero;
+            mySpriteRenderer.enabled = false;
             StartCoroutine(TurnOffTrail());
         }
     }
@@ -229,26 +239,23 @@ public class Rocket : MonoBehaviour
         {
             Gizmos.DrawRay(transform.position, myBody.velocity.normalized * 5);
         }
+
         Gizmos.DrawSphere(transform.position, radius: mySpriteRenderer.size.magnitude);
-        
     }
 
 
-    void LandOnPlanet(Transform planetTransform)
+    void LandOnPlanet(Transform planet)
     {
-        transform.SetParent(planetTransform, worldPositionStays: true);
-        transform.SetPositionAndRotation(planetTransform.position,
+        Debug.Log("Rocket placed on " + planet.name);
+        transform.SetParent(planet, worldPositionStays: true);
+        transform.SetPositionAndRotation(planet.position,
             Quaternion.identity);
-        parentPlanet = planetTransform.GetComponent<Planetoid>();
+        parentPlanet = planet.GetComponent<Planetoid>();
         parentPlanet.UpdateColors(myColor);
         parentPlanet.mySparks.Play();
-        
         parentPlanet.myOutline.enabled = true;
-        Debug.Log("Removeing parent" + planetTransform.name + " --> curr len " +
-                  attractableBodies.Count);
-        attractableBodies.Remove(parentPlanet);
+        // attractableBodies.Remove(parentPlanet);
         parentPlanet.GetComponent<Collider2D>().enabled = false;
-        Debug.Log("new len " + attractableBodies.Count);
         TogglePhysics(false);
     }
 
@@ -258,12 +265,18 @@ public class Rocket : MonoBehaviour
         Debug.Log("Crashed");
         if (col.CompareTag("planet"))
         {
-            LandOnPlanet(planetTransform: col.transform);
+            LandOnPlanet(planet: col.transform);
+            if (col.name == starSystemSpawner.end.name)
+            {
+                SetLevelComplete("NICE");
+            }
         }
         else if (col.CompareTag("star"))
         {
+            LandOnPlanet(planet: col.transform);
             Debug.Log("I have died!");
-            Destroy(gameObject);
+            numDeath += 1;
+            SetLevelComplete("OOPS");
         }
     }
 
@@ -301,5 +314,42 @@ public class Rocket : MonoBehaviour
         if (r.magnitude < maxDistance)
             magnitude = (m1 * m2) / r.sqrMagnitude;
         return -r.normalized * magnitude;
+    }
+
+    public void ResetRocket()
+    {
+        StartCoroutine(WaitBeforeEnablingParentGravity(0));
+        if (parentPlanet != null)
+            parentPlanet.myOutline.enabled = false;
+        TogglePhysics(false);
+        LandOnPlanet(starSystemSpawner.start.transform);
+        StartCoroutine(TurnControlsOn());
+    }
+
+    IEnumerator TurnControlsOn()
+    {
+        yield return new WaitForSeconds(0.2f);
+        controlEnabled = true;
+    }
+
+
+    /// <summary>
+    /// https://docs.unity3d.com/ScriptReference/MonoBehaviour.OnBecameInvisible.html
+    /// </summary>
+    void OnBecameInvisible() // when object is not in view of any camera 
+    {
+        if (controlEnabled && gravitationOn)
+            SetLevelComplete("YEETED");
+    }
+    
+    void SetLevelComplete(string text)
+    {
+        if (animateUi != null)
+        {
+            animateUi.levelCompleteText.text = text;
+            animateUi.EnableLevelCompleteUI();
+        }
+
+        controlEnabled = false;
     }
 }
