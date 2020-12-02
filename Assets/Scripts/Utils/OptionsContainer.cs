@@ -8,11 +8,10 @@ public class OptionsContainer : MonoBehaviour
 {
 
     public bool DebuggingMode = false;
-    public int numberPlanets = 1;
-    public int depth = 2;
-    public int numberStars = 3;
+    public bool linearGravity = true;
+    public float gravityFactor = 1.5f;
     
-    
+
     void Awake()
     {
         GameObject[] objs = GameObject.FindGameObjectsWithTag("dont_destroy");

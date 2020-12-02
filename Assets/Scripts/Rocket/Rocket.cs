@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class Rocket : MonoBehaviour
 
     public int numDeath = 0;
 
+    
     public bool controlEnabled = false;
 
     [Tooltip("Max distance rocket will gravitationally be affected by planets")]
@@ -22,7 +24,9 @@ public class Rocket : MonoBehaviour
     public float mass = 20;
     public Vector2 initialVelocity;
 
+    private float gravityFactor = 1.5f;
     private bool debuggingMode = false;
+    private int gravityPower=1; 
     
     private MouseDragRelease mouseController;
 
@@ -51,6 +55,8 @@ public class Rocket : MonoBehaviour
 
     private AnimateUI animateUi;
 
+
+
     private void Awake()
     {
         OptionsContainer op = FindObjectOfType<OptionsContainer>();
@@ -66,6 +72,17 @@ public class Rocket : MonoBehaviour
                 DebugLine.startWidth = 0.1f;
                 DebugLine.endWidth = 0.1f;
             }
+
+
+            if (op.linearGravity)
+                gravityPower = 1;
+            else
+                gravityPower = 2;
+
+
+            gravityFactor = op.gravityFactor;
+
+
         }
     }
 
@@ -84,6 +101,7 @@ public class Rocket : MonoBehaviour
         myTrailRender.autodestruct = false;
         trailTime = myTrailRender.time;
         myTrailRender.time = 0;
+        Debug.Log("Setting trail time = " + myTrailRender.time);
         StartCoroutine(InitAttractorList());
     }
 
@@ -115,7 +133,11 @@ public class Rocket : MonoBehaviour
                 bod.GetComponent<Collider2D>().enabled = true;
             }
         }
-            
+        else
+        {
+            myTrailRender.time = 0;
+        }
+
     }
 
 
@@ -154,17 +176,20 @@ public class Rocket : MonoBehaviour
 
     IEnumerator TurnOffTrail()
     {
-        float lerpDuration = 1.0f;
+        Debug.Log("Using TurnOffTrail coroutine to set trail.time = 0");
+        float lerpDuration = 0.2f;
         float timeElapsed = 0;
 
         float currentTime = myTrailRender.time;
-        while (timeElapsed < lerpDuration)
+        while (timeElapsed < lerpDuration && grounded)
         {
             myTrailRender.time =
                 Mathf.Lerp(currentTime, 0.01f, timeElapsed / lerpDuration);
             timeElapsed += Time.deltaTime;
             yield return null;
         }
+        Debug.Log("Trail renderer off from courotine");
+        
     }
 
 
@@ -182,6 +207,7 @@ public class Rocket : MonoBehaviour
 
     void CalculateShot(Vector3 shotVector)
     {
+        myTrailRender.time = 0;
         if (shotVector == Vector3.zero)
         {
             shotVector = mouseController.GetMousePoint() - transform.position;
@@ -190,7 +216,7 @@ public class Rocket : MonoBehaviour
         shotForce = Mathf.Clamp(
             value: shotVector.magnitude,
             min: 1.0f,
-            max: maxForce
+            max: maxForce * gravityFactor 
         );
 
 
@@ -206,6 +232,7 @@ public class Rocket : MonoBehaviour
     void TakeShot(Vector3 shotVector)
     {
         Debug.Log("Take shot");
+        myTrailRender.time = trailTime;
         initialVelocity = shotVector.normalized * shotForce;
         shotForce = 0;
         parentPlanet.myOutline.enabled = false;
@@ -249,7 +276,7 @@ public class Rocket : MonoBehaviour
             myCollider2D.enabled = true;
             myBody.velocity = initialVelocity;
             transform.parent = null;
-            Debug.Log("remove parent");
+            Debug.Log("Setting trail time = " + myTrailRender.time);
             myTrailRender.time = trailTime;
             mySpriteRenderer.enabled = true;
         }
@@ -325,7 +352,7 @@ public class Rocket : MonoBehaviour
                 NetForce += GravitationalForceFrom(otherBody);
         }
 
-        return NetForce;
+        return  NetForce;
     }
 
 
@@ -346,7 +373,7 @@ public class Rocket : MonoBehaviour
         Vector2 r = transform.position - otherBody.transform.position;
         float magnitude = 0.0f;
         if (r.magnitude < maxDistance)
-            magnitude = (m1 * m2) / r.sqrMagnitude;
+            magnitude = gravityFactor * (m1 * m2) / Mathf.Pow(r.magnitude, gravityPower);
         return -r.normalized * magnitude;
     }
 
@@ -365,6 +392,7 @@ public class Rocket : MonoBehaviour
     {
         yield return new WaitForSeconds(0.2f);
         controlEnabled = true;
+        myTrailRender.time = trailTime;
     }
 
 

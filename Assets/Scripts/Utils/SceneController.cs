@@ -39,14 +39,21 @@ public class SceneController : MonoBehaviour
         return nextScene;
     }
 
-    public void NextLevel()
+    public void NextLevel() // called by a button 
     {
-        SceneManager.LoadScene(sceneIdx); // currently just reloading scene
+        SceneManager.LoadScene(sceneIdx); // currently just reloading scene (this gives new version of current scene)
     }
     
-    public void ReplayLevel()
+    
+    public void GoToGame()// called by a button 
     {
-        Debug.Log("REPLAY NOT IMPLEMENTED YET");
-        SceneManager.LoadScene(sceneIdx); 
+        SceneManager.LoadScene(1); 
     }
+    
+    public void GoToMenu()// called by a button 
+    {
+        SceneManager.LoadScene(0);  
+    }
+    
+    
 }
